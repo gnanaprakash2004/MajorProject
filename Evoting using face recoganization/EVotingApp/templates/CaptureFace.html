@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>E-Voting - Face Capture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script type="text/javascript" src="{% static 'webcam.min.js' %}"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(13, 71, 161, 0.9)),
+                  url("{% static 'images/image.png' %}") no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .navbar {
+      background: rgba(13, 71, 161, 0.9) !important;
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      margin-bottom: 2rem;
+    }
+    .main-container {
+      padding: 2rem;
+    }
+    .camera-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin: 1rem auto;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+    .camera-container:hover {
+      transform: translateY(-5px);
+    }
+    #results {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    #my_camera {
+      border-radius: 15px;
+      overflow: hidden;
+      margin: 1rem auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    .btn-capture {
+      background: linear-gradient(45deg, #2196F3, #1565C0);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    .btn-capture:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+    }
+    .btn-submit {
+      background: linear-gradient(45deg, #1565C0, #0D47A1);
+      color: white;
+      border: none;
+      padding: 1.2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(13, 71, 161, 0.4);
+    }
+    #sr {
+      margin-top: 1.5rem;
+      padding: 1.2rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .page-title {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+    .page-title h1 {
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+    }
+    .page-title p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #4CAF50;
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .captured-image {
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-camera me-2"></i>Face Registration
+      </a>
+    </div>
+  </nav>
+
+  <div class="container main-container">
+    <div class="page-title">
+      <h1><i class="fas fa-user-circle me-3"></i>Face Registration</h1>
+      <p><span class="status-indicator"></span>Camera is ready for capture</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="camera-container">
+          <div id="my_camera" class="text-center"></div>
+          <form class="text-center mt-4">
+            <button type="button" class="btn-capture" onClick="take_snapshot()">
+              <i class="fas fa-camera me-2"></i>Capture Photo
+            </button>
+            <div id="sr" class="text-white">
+              <i class="fas fa-info-circle me-2"></i>Waiting for capture...
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div id="results" class="text-center">
+          <i class="fas fa-image fa-3x mb-3"></i>
+          <p>Your captured image will appear here...</p>
+        </div>
+        
+        <form name="f1" method="post" action="{% url 'saveSignup' %}" class="text-center">
+          {% csrf_token %}
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-check-circle me-2"></i>Complete Registration
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    Webcam.set({
+      width: 320,
+      height: 240,
+      image_format: 'jpeg',
+      jpeg_quality: 90
+    });
+    Webcam.attach('#my_camera');
+
+    function take_snapshot() {
+      Webcam.snap(function(data_uri) {
+        document.getElementById('results').innerHTML = 
+          '<h4 class="mb-3"><i class="fas fa-check me-2"></i>Captured Image:</h4>' + 
+          '<img src="'+data_uri+'" class="captured-image"/>';
+        
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://127.0.0.1:8000/WebCam?mytext="+data_uri);
+        request.onreadystatechange = function() {
+          if(this.readyState === 4 && this.status === 200) {
+            data = this.responseText;
+            document.getElementById("sr").innerHTML = '<i class="fas fa-check-circle me-2"></i>' + data;
+          }
+        };
+        request.send();
+      });
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

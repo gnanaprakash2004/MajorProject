@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>E-Voting - Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(13, 71, 161, 0.9)),
+                  url("{% static 'images/image.png' %}") no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+	
+    .navbar {
+      background: rgba(13, 71, 161, 0.9) !important;
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white !important;
+    }
+    .nav-link {
+      color: white !important;
+      font-weight: 500;
+      padding: 0.75rem 1.5rem !important;
+      margin: 0 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+    .register-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin: 2rem auto;
+      max-width: 600px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    .register-title {
+      font-size: 2rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #fff;
+    }
+    .form-label {
+      color: #fff;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .form-control {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 0.75rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .btn-register {
+      background: linear-gradient(45deg, #1565C0, #0D47A1);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    .btn-register:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(13, 71, 161, 0.4);
+    }
+    .alert {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'index' %}">
+        <i class="fas fa-vote-yea me-2"></i>E-Voting
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}"><i class="fas fa-home me-2"></i>Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'Admin' %}"><i class="fas fa-user-shield me-2"></i>Admin</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'Login' %}"><i class="fas fa-sign-in-alt me-2"></i>Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'Register' %}"><i class="fas fa-user-plus me-2"></i>Register</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="register-container">
+      <h2 class="register-title">
+        <i class="fas fa-user-plus me-2"></i>Create Account
+      </h2>
+
+      {% if data %}
+      <div class="alert text-center mb-4">
+        {{ data }}
+      </div>
+      {% endif %}
+
+      <form name="f1" method="post" action="{% url 'Signup' %}" onsubmit="return validate()">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0">
+              <i class="fas fa-user text-white"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" name="username" id="username" placeholder="Enter username">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0">
+              <i class="fas fa-lock text-white"></i>
+            </span>
+            <input type="password" class="form-control border-start-0" name="password" id="password" placeholder="Enter password">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact Number</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0">
+              <i class="fas fa-phone text-white"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" name="contact" id="contact" placeholder="Enter contact number">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0">
+              <i class="fas fa-envelope text-white"></i>
+            </span>
+            <input type="email" class="form-control border-start-0" name="email" id="email" placeholder="Enter email address">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">Address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0">
+              <i class="fas fa-map-marker-alt text-white"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" name="address" id="address" placeholder="Enter your address">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-register">
+          <i class="fas fa-user-plus me-2"></i>Register Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function validate() {
+      var username = document.forms["f1"]["username"].value;
+      var password = document.forms["f1"]["password"].value;
+      var contact = document.forms["f1"]["contact"].value;
+      var email = document.forms["f1"]["email"].value;
+      var address = document.forms["f1"]["address"].value;
+
+      if (!username || username.trim() === "") {
+        alert("Username must be entered");
+        document.f1.username.focus();
+        return false;
+      }
+      if (!password || password.trim() === "") {
+        alert("Password must be entered");
+        document.f1.password.focus();
+        return false;
+      }
+      if (!contact || contact.trim() === "") {
+        alert("Contact number must be entered");
+        document.f1.contact.focus();
+        return false;
+      }
+      if (isNaN(contact)) {
+        alert("Please enter a valid contact number");
+        document.f1.contact.focus();
+        return false;
+      }
+      if (!email || email.trim() === "") {
+        alert("Email ID must be entered");
+        document.f1.email.focus();
+        return false;
+      }
+      // Updated email validation regex to accept any valid email format
+      var emailFilter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!emailFilter.test(email)) {
+        alert("Please enter a valid email address");
+        document.f1.email.focus();
+        return false;
+      }
+      if (!address || address.trim() === "") {
+        alert("Address must be entered");
+        document.f1.address.focus();
+        return false;
+      }
+      return true;
+    }
+  </script>
+</body>
+</html>
